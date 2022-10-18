@@ -64,13 +64,12 @@ class App extends Component {
     }));
   };
   componentDidMount = () => {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    if (parsedContacts) {
-      this.setState({ contacts: parsedContacts });
+    const contacts = JSON.parse(localStorage.getItem('contacts'));
+    if (contacts) {
+      this.setState({ contacts });
     }
   };
-  componentDidUpdate = (prevProps, prevState) => {
+  componentDidUpdate = (_, prevState) => {
     if (this.state.contacts !== prevState.contacts) {
       localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
     }
@@ -83,16 +82,18 @@ class App extends Component {
         <Section title="Phonebook">
           <ContactForm names={this.state} addContact={this.addContact} />
         </Section>
-        <Section title="Contacts">
-          <Filter
-            filter={this.state.filter}
-            onFilterChange={this.onFilterChange}
-          />
-          <ContactList
-            contacts={contacts}
-            onDeleteContact={this.deleteContact}
-          />
-        </Section>
+        {this.state.contacts.length > 0 ? (
+          <Section title="Contacts">
+            <Filter
+              filter={this.state.filter}
+              onFilterChange={this.onFilterChange}
+            />
+            <ContactList
+              contacts={contacts}
+              onDeleteContact={this.deleteContact}
+            />
+          </Section>
+        ) : null}
       </Container>
     );
   }
